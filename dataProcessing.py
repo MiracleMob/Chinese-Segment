@@ -16,7 +16,7 @@ class dataProcess :
 
     def getWordDict1998(self,path):
         words_list = []
-        words_dict = []
+        words_dict = {}
         with open(path) as f1:
             line = f1.readline()
             while line:
@@ -89,7 +89,7 @@ class dataProcess :
             frequency_csv_list.append(value)
 
         dataframe = pd.DataFrame({'词语': word_csv_list, '词频': frequency_csv_list})
-        dataframe.to_csv('/data/' + filename)
+        dataframe.to_csv('data/' + filename)
 
     def readWordsDict(self,wordList_path):
         words_dict = {}
@@ -108,7 +108,8 @@ class dataProcess :
 
     def SaveWordsPairDict(self,words_dict_path,filename):
         words_pair = {}
-        words_list,_ = self.readWordsDict(words_dict_path)
+        words_list,_ = self.getWordDict2014(words_dict_path)
+        print(type(words_list))
         length = len(words_list)
         for i in range(length):
             tmp_length = len(words_list[i])
@@ -129,12 +130,15 @@ class dataProcess :
             pair_csv_list.append(key)
             frequencyPair_csv_list.append(value)
         dataframe = pd.DataFrame({'词对': pair_csv_list, '词频': frequencyPair_csv_list})
-        dataframe.to_csv('/data/' + filename)
+        dataframe.to_csv('data/' + filename)
+        #dataframe.to_pickle('/Users/mxb/PycharmProjects/Chinese_Segment/data' + filename)
 
 
     def readWordsPairDict(self,wordPairList_path):
         words_pair_dict = {}
+
         words_pair_list = pd.read_csv(wordPairList_path)
+        #words_pair_list = pd.read_pickle(wordPairList_path)
         for i in range(len(words_pair_list)):
             word_pair = words_pair_list.loc[i]['词对']
             frequency = words_pair_list.loc[i]['词频']
@@ -142,7 +146,19 @@ class dataProcess :
             # if frequency > 5:
             #    words_pair_dict[word_pair] = frequency
         return words_pair_dict
+    def getTestData(self):
+        with open(config.test_data_path,encoding='gbk') as f:
+            sentence_list = []
+            line = f.readline().strip()
+            while line:
+                sentence_list.append(line)
+                line = f.readline().strip()
 
+        return sentence_list
+
+if __name__ == '__main__':
+    dict_path = ''
+    dataProcess().SaveWordsPairDict(config.corpus_2014_path,'WordPairList2014.pkl')
 
 
 
