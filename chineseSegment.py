@@ -84,7 +84,7 @@ class Segment :
         return candidate_words_list,words_dict,left_word_dict
 
     def findBestLeftWord(sentence,words_dict,words_pair_dict):
-        candidate_words_list,words_dict,left_word_dict = Segment.findCandidateLeftWords(sentence,words_dict)
+        candidate_words_list,words_dict,left_word_dict = Segment.findCandidateLeftWords(sentence, words_dict)
         #words_pair_dict = dataProcessing.dataProcess().readWordsPairDict(config.wordPairList_path_1998)
         best_left_word_dict = {}
         words_length = len(words_dict)
@@ -124,12 +124,8 @@ class Segment :
                         # 如果不存在词对，计为1
                         pair_count = 0
                 left_word_str = left_word +' '+str(s1_left)+' '+str(s2_left)
-                    # try:
-                    #     left_pro = best_left_word_dict[left_word][1]
-                    # except:
-                    #     left_pro = 1 / words_length
-                    #     pass
-                print(best_left_word_dict[left_word_str])
+                if left_word_str not in best_left_word_dict.keys():
+                    continue
                 ##拉普拉斯平滑
                 # pro = math.log(best_left_word_dict[left_word][1] + 1) + math.log(pair_count + 1) - math.log(sum_pair_count + sentence_length) + 100
                 pro = best_left_word_dict[left_word_str][1] * (pair_count + 1) / ((sum_pair_count) + words_length)
@@ -228,18 +224,20 @@ if __name__ == '__main__':
         config.wordPairList_path_1998)
 
     result_list = []
-    sentence = '全国各地积极开展走访慰问困难企业和特困职工的送温暖活动'
+    sentence = '欢乐热闹的气氛已悄悄降临'
     print(Segment.getChineseSegment(sentence,words_dict,words_pair_dict))
     for sentences in sentence_list:
         sentence_cut = Segment.sentenceCut(sentences)
         result = ''
         for sentence in sentence_cut:
             if '\u4e00' <=sentence[0]<= '\u9fff' and len(sentence) > 1:
-                try:
-                   result += Segment.getChineseSegment(sentence, words_dict,words_pair_dict)
-                except:
-                   result += sentence + ' '
-                print(result)
+                result += Segment.getChineseSegment(sentence, words_dict,
+                                                    words_pair_dict)
+                # try:
+                #    result += Segment.getChineseSegment(sentence, words_dict,words_pair_dict)
+                # except:
+                #    result += sentence + ' '
+                # print(result)
             else:
                 result += sentence +' '
         print(result)
