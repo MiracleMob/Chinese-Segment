@@ -1,8 +1,7 @@
-import pandas as pd
 import config
 import dataProcessing
-import time
-class Segment :
+
+class Segment:
     def __init__(self):
         self.candidateLen = config.candidateLen
         self.wordList_1998_path = config.wordList_1998_path
@@ -38,8 +37,6 @@ class Segment :
                 # 频率计为1
                 words_dict[w] = 1
                 candidate_words_list.append([w, index, index])
-
-        print(candidate_words_list)
 
         return candidate_words_list, words_dict
 
@@ -78,8 +75,6 @@ class Segment :
                 if tmp_word in words_dict.keys():
                     left_word = tmp_word
                     left_word_dict[word_str].append([left_word, start - i - 1, start - 1])
-
-        print(left_word_dict)
 
         return candidate_words_list,words_dict,left_word_dict
 
@@ -141,8 +136,6 @@ class Segment :
                     max_end_pro = pro
                     best_left_word_dict['end'] = [candidate_word_str, max_end_pro]
 
-        print(best_left_word_dict)
-
         return best_left_word_dict
 
 
@@ -180,8 +173,6 @@ class Segment :
 
 
 
-
-
     def getChineseSegment(sentence,words_dict,words_pair_dict):
         print('正在切分.......')
         best_left_word_dict = Segment.findBestLeftWord(sentence,words_dict,words_pair_dict)
@@ -208,15 +199,9 @@ if __name__ == '__main__':
 
 
     sentence_list = dataProcessing.dataProcess().getTestData()
-    # sentence_list= [
-    #     '我们在学习',
-    #     '等到处长发现他们有意见分歧',
-    #     '2018年11月8日，这是我的生日。'
-    # ]
     for sentence in sentence_list:
         print(Segment.sentenceCut(sentence))
 
-    print('reading data')
 
     _, words_dict = dataProcessing.dataProcess().readWordsDict(
         config.wordList_1998_path)
@@ -226,6 +211,7 @@ if __name__ == '__main__':
     result_list = []
     sentence = '欢乐热闹的气氛已悄悄降临'
     print(Segment.getChineseSegment(sentence,words_dict,words_pair_dict))
+
     for sentences in sentence_list:
         sentence_cut = Segment.sentenceCut(sentences)
         result = ''
@@ -233,11 +219,6 @@ if __name__ == '__main__':
             if '\u4e00' <=sentence[0]<= '\u9fff' and len(sentence) > 1:
                 result += Segment.getChineseSegment(sentence, words_dict,
                                                     words_pair_dict)
-                # try:
-                #    result += Segment.getChineseSegment(sentence, words_dict,words_pair_dict)
-                # except:
-                #    result += sentence + ' '
-                # print(result)
             else:
                 result += sentence +' '
         print(result)
